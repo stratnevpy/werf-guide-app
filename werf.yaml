@@ -7,20 +7,23 @@ from: node:12-alpine
 git:
 - add: /
   to: /app
-  includePaths:
-  - package.json 
-  - package-lock.json
-  stageDependencies:
-  - install
-- add: /
-  to: /app
-  stageDependencies:
-  - setup
+  excludePaths:
+  - local
+  - .helm
+  - Dockerfile
+  stageDependencies: 
+    install:
+    - package.json 
+    - package-lock.json
+    setup:
+    - "**/*"
 shell:
   install:
+  - cd /app
   - npm ci
   setup:
-  - npm build
+  - cd /app
+  - npm run build
 
 ---
 image: backend
@@ -33,44 +36,23 @@ git:
   includePaths:
   - package.json 
   - package-lock.json
-  stageDependencies:
-  - install
+  stageDependencies: 
+    install:
+    - package.json 
+    - package-lock.json
 shell:
   beforeInstall:
   - apk update
   - apk add -U mysql-client
   install:
+  - cd /app
   - npm ci --production
   setup:
   - mkdir -p /app/dist
 import:
 - image: builder
-  add: /app/dist/*.html
-  to: /app/dist
-  after: setup
-- image: builder
-  add: /app/app.js
-  to: /app/app.js
-  after: setup
-- image: builder
-  add: /app/bin
-  to: /app/bin
-  after: setup
-- image: builder
-  add: /app/routes
-  to: /app/routes
-  after: setup
-- image: builder
-  add: /app/config
-  to: /app/config
-  after: setup
-- image: builder
-  add: /app/db
-  to: /app/db
-  after: setup
-- image: builder
-  add: /app/.sequelizerc
-  to: /app/.sequelizerc
+  add: /app
+  to: /app
   after: setup
 
 ---
@@ -85,4 +67,8 @@ import:
 - image: builder
   add: /app/dist
   to: /www/static
-  after: install
+  after: setup
+
+---
+image: mysql
+from: mysql:5.7
