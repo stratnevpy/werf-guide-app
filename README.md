@@ -11,3 +11,5 @@
 `./deploy-app.sh`
 
 `kubectl -n local get po`
+
+Navigate to http://test.application.local/

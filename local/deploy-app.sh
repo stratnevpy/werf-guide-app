@@ -13,16 +13,16 @@ if [[ $# -gt 0 ]]; then
         case $argument in
             -f|--follow)
                 DEFAULT="--dev --follow"
-                werf converge --repo $APP_REPO --release $RELEASE --env $ENV --namespace $NAMESPACE --set ci_url=$URL --set app.enabled=true $MODE --ignore-secret-key=true
+                werf converge --repo $APP_REPO --release $RELEASE --env $ENV --namespace $NAMESPACE --set app.ci_url=$URL --set app.enabled=true $MODE --ignore-secret-key=true
                 cd ./local
                 ;;
             *)
                 DEFAULT="--dev"
-                werf converge --repo $APP_REPO --release $RELEASE --env $ENV --namespace $NAMESPACE --set ci_url=$URL --set app.enabled=true $MODE --ignore-secret-key=true
+                werf converge --repo $APP_REPO --release $RELEASE --env $ENV --namespace $NAMESPACE --set app.ci_url=$URL --set app.enabled=true $MODE --ignore-secret-key=true
                 cd ./local
                 ;;
         esac
     done
 else
-    werf converge --repo $APP_REPO --release $RELEASE --env $ENV --namespace $NAMESPACE --set ci_url=$URL --set app.enabled=true $MODE --ignore-secret-key=true
+    werf converge --repo $APP_REPO --release $RELEASE --env $ENV --namespace $NAMESPACE --set app.ci_url=$URL --set app.enabled=true $MODE --ignore-secret-key=true
 fi
