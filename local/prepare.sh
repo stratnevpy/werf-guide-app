@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# VARIABLES
+. variables
+
 OS=$(uname)
 
 if [ $(type kubectl > /dev/null; echo $?) != '0' ]
@@ -41,6 +44,12 @@ if [ -z $WERF_INSECURE_REGISTRY ]
    exit 1
    }
 fi
+
+echo \
+'{
+    "insecure-registries": ["'$REPO'"]
+}' | sudo tee /etc/docker/daemon.json
+sudo systemctl restart docker
 
 minikube start --driver=docker --insecure-registry="$REPO"
 minikube addons enable ingress

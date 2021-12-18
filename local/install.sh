@@ -14,14 +14,11 @@ sudo apt update
 sudo apt install docker-ce docker-ce-cli containerd.io
 
 # Setup docker
-echo \
-'{
-    "insecure-registries": ["'$REPO'"]
-}' | sudo tee /etc/docker/daemon.json
 sudo usermod -aG docker $USER
 sudo systemctl restart docker
 
 # Install kubectl
+# https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/
 sudo curl -L "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl" -o /usr/local/bin/kubectl
 sudo chown root. /usr/local/bin/kubectl && sudo chmod 755 /usr/local/bin/kubectl
 
@@ -29,15 +26,16 @@ sudo chown root. /usr/local/bin/kubectl && sudo chmod 755 /usr/local/bin/kubectl
 # https://ru.werf.io/installation.html?version=1.2&channel=ea&os=linux&method=trdl&arch=amd64#%D1%83%D1%81%D1%82%D0%B0%D0%BD%D0%BE%D0%B2%D0%BA%D0%B0-%D0%B7%D0%B0%D0%B2%D0%B8%D1%81%D0%B8%D0%BC%D0%BE%D1%81%D1%82%D0%B5%D0%B9
 echo 'export PATH=$HOME/bin:$PATH' >> ~/.bash_profile
 export PATH="$HOME/bin:$PATH"
-curl -L "https://tuf.trdl.dev/targets/releases/0.1.3/linux-amd64/bin/trdl" -o /tmp/trdl
+curl -L "https://tuf.trdl.dev/targets/releases/0.3.1/linux-amd64/bin/trdl" -o /tmp/trdl
 mkdir -p ~/bin
 install /tmp/trdl ~/bin/trdl
 trdl add werf https://tuf.werf.io 1 b7ff6bcbe598e072a86d595a3621924c8612c7e6dc6a82e919abe89707d7e3f468e616b5635630680dd1e98fc362ae5051728406700e6274c5ed1ad92bea52a2
 echo 'command -v trdl &>/dev/null && source $(trdl use werf 1.2 ea)' >> ~/.bashrc
+source $(trdl use werf 1.2 ea)
 werf version
 
 # Install minikube
 # https://minikube.sigs.k8s.io/docs/start/
 # for Ubuntu:
 sudo curl -L https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64 -o /usr/local/bin/minikube
-
+sudo chown root. /usr/local/bin/minikube && sudo chmod 755 /usr/local/bin/minikube
